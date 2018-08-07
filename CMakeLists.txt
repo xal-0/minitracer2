@@ -3,9 +3,9 @@ project(minitracer)
 
 file(GLOB_RECURSE sources src/*.cpp src/*.hpp)
 
-if (CMAKE_SYSTEM_PROCESSOR MATCHES "(x86)|(X86)")
+if ("${CMAKE_SIZEOF_VOID_P}" EQUAL "4")
   add_definitions(-DX86)
-elseif (CMAKE_SYSTEM_PROCESSOR MATCHES "(amd64)|(AMD64)")
+elseif ("${CMAKE_SIZEOF_VOID_P}" EQUAL "8")
   add_definitions(-DAMD64)  
 else ()
   message ( FATAL_ERROR "unsupported architecture" )
