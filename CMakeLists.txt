@@ -12,7 +12,7 @@ else ()
 endif ()
 
 add_executable(test ${sources})
-target_compile_options(test PUBLIC -std=c++17 -Wall)
+target_compile_options(test PUBLIC -g -std=c++17 -Wall)
 
 target_include_directories(test PUBLIC src/)
 

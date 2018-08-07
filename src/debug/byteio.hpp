@@ -1,4 +1,4 @@
-#include <iostream>
+#include <istream>
 #include <cstdint>
 
 template <typename T>

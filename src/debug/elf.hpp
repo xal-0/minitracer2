@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <iostream>
 #include <array>
+#include <string>
+#include <map>
 
 #define PACK __attribute__((packed))
 
@@ -41,9 +43,31 @@ struct PACK elf_header {
     uint16_t shstrndx;
 };
 
+struct PACK elf_sheader {
+    uint32_t name;
+    uint32_t type;
+    uintptr_t flags;
+    uintptr_t addr;
+    uintptr_t offset;
+    uintptr_t size;
+    uint32_t link;
+    uint32_t info;
+    uintptr_t addralign;
+    uintptr_t entsize;
+};
+
 class elf {
+    class section {
+    public:
+        uintptr_t offset;
+        uintptr_t size;
+    };
+
 public:
     elf(std::istream &s);
+
+private:
+    std::map<std::string, section> sections;
 };
 
 };
