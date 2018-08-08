@@ -7,6 +7,7 @@
 #include <string>
 #include <map>
 #include <fstream>
+#include <ios>
 
 #include "elf.hpp"
 #include "byteio.hpp"
@@ -70,16 +71,16 @@ void elf::read_sections()
     elf_header h = read_obj<elf_header>(*stream);
 
     if (!equal(begin(h.magic), end(h.magic), elf_magic.begin()))
-        throw invalid_argument("not an elf file (wrong magic)");
+        throw invalid_argument{"not an elf file (wrong magic)"};
 
     if ((h.fileclass == 1 && elf_bits == 64)
         || (h.fileclass == 2 && elf_bits == 32))
-        throw invalid_argument("only " 
-                               + to_string(elf_bits)
-                               + " bits is supported");
+        throw invalid_argument{"only " 
+                + to_string(elf_bits)
+                + " bits is supported"};
 
     if (h.data != 1)
-        throw invalid_argument("only native byte ordering is supported\n");
+        throw invalid_argument{"only native byte ordering is supported\n"};
 
     stream->seekg(h.shoff + h.shentsize*h.shstrndx);
 
@@ -97,6 +98,31 @@ void elf::read_sections()
         string name{&raw_shstrtab[sec.name]};
         sections[name] = { sec.offset, sec.size };
     }
+}
+
+elf::sectionbuf elf::get_section(string name)
+{
+    section sec = sections.at(name);
+    return sectionbuf(stream, sec);
+}
+
+elf::sectionbuf::sectionbuf(shared_ptr<istream> stream, elf::section sec)
+    : stream(stream), sec(sec)
+{
+}
+
+int elf::sectionbuf::underflow()
+{
+    char ret;
+
+    unsigned long cpos = sec.offset + pos++;
+    if (pos > sec.size)
+        return EOF;
+
+    stream->seekg(cpos);
+    *stream >> ret;
+
+    return ret;
 }
 
 };

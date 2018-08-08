@@ -32,11 +32,24 @@ class elf {
 public:
     class sectionbuf : public std::streambuf {
     public:
-        sectionbuf(elf::section s);
-    };
+        sectionbuf(std::shared_ptr<std::istream> stream,
+                   elf::section sec);
 
+    protected:
+        int underflow();
+
+    private:
+        std::shared_ptr<std::istream> stream;
+        elf::section sec;
+        char data;
+        char buf[1024];
+        unsigned long pos = 0;
+    };
+    
     elf(std::string filename);
     elf(std::shared_ptr<std::istream> stream);
+
+    sectionbuf get_section(std::string name);
 
 private:
     void read_sections();

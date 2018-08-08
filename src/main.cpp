@@ -15,4 +15,13 @@ int main(int argc, char **argv)
     }
 
     elf::elf e(argv[1]);
+    auto b = e.get_section(".interp");
+    std::istream is(&b);
+    char c;
+
+    for (int i = 0; i < 3; i++) {
+        is >> c;
+        cout << c << endl;
+
+    }
 }
