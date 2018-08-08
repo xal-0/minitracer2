@@ -14,6 +14,5 @@ int main(int argc, char **argv)
         exit(1);
     }
 
-    ifstream i{argv[1], std::ios_base::binary};
-    elf::elf e(i);
+    elf::elf e(argv[1]);
 }

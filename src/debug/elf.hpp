@@ -5,6 +5,8 @@
 #include <array>
 #include <string>
 #include <map>
+#include <memory>
+#include <streambuf>
 
 #define PACK __attribute__((packed))
 
@@ -20,42 +22,6 @@ const unsigned elf_off = 8;
 #error "unsupported platform"
 #endif
 
-const std::array<uint8_t, 4> elf_magic = { 0x7f, 'E', 'L', 'F' };
-
-struct PACK elf_header {
-    uint8_t magic[4];
-    uint8_t fileclass;
-    uint8_t data;
-    uint8_t version0;
-    uint8_t pad[9];
-    uint16_t type;
-    uint16_t machine;
-    uint32_t version1;
-    uintptr_t entry;
-    uintptr_t phoff;
-    uintptr_t shoff;
-    uint32_t flags;
-    uint16_t ehsize;
-    uint16_t phentsize;
-    uint16_t phnum;
-    uint16_t shentsize;
-    uint16_t shnum;
-    uint16_t shstrndx;
-};
-
-struct PACK elf_sheader {
-    uint32_t name;
-    uint32_t type;
-    uintptr_t flags;
-    uintptr_t addr;
-    uintptr_t offset;
-    uintptr_t size;
-    uint32_t link;
-    uint32_t info;
-    uintptr_t addralign;
-    uintptr_t entsize;
-};
-
 class elf {
     class section {
     public:
@@ -64,9 +30,17 @@ class elf {
     };
 
 public:
-    elf(std::istream &s);
+    class sectionbuf : public std::streambuf {
+    public:
+        sectionbuf(elf::section s);
+    };
+
+    elf(std::string filename);
+    elf(std::shared_ptr<std::istream> stream);
 
 private:
+    void read_sections();
+    std::shared_ptr<std::istream> stream;
     std::map<std::string, section> sections;
 };
 
