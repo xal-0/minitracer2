@@ -8,8 +8,6 @@
 #include <memory>
 #include <streambuf>
 
-#define PACK __attribute__((packed))
-
 namespace elf {
 
 #if X86
@@ -30,26 +28,26 @@ class elf {
     };
 
 public:
-    class sectionbuf : public std::streambuf {
+    class sectionstream : public std::istream {
     public:
-        sectionbuf(std::shared_ptr<std::istream> stream,
-                   elf::section sec);
+        sectionstream(std::shared_ptr<std::istream>,
+                      section sec);
 
-    protected:
-        int underflow();
+        pos_type tellg();
+        sectionstream & seekg(pos_type pos);
+
+        int_type get();
+        
+        section sec;
 
     private:
         std::shared_ptr<std::istream> stream;
-        elf::section sec;
-        char data;
-        char buf[1024];
-        unsigned long pos = 0;
     };
     
     elf(std::string filename);
     elf(std::shared_ptr<std::istream> stream);
 
-    sectionbuf get_section(std::string name);
+    sectionstream get_section(std::string name);
 
 private:
     void read_sections();

@@ -11,6 +11,7 @@
 
 #include "elf.hpp"
 #include "byteio.hpp"
+#include "arch/arch.hpp"
 
 using namespace std;
 
@@ -18,6 +19,7 @@ namespace elf {
 
 const std::array<uint8_t, 4> elf_magic = { 0x7f, 'E', 'L', 'F' };
 
+STARTPACK
 struct PACK elf_header {
     uint8_t magic[4];
     uint8_t fileclass;
@@ -51,6 +53,7 @@ struct PACK elf_sheader {
     uintptr_t addralign;
     uintptr_t entsize;
 };
+ENDPACK
 
 elf::elf(string filename)
     : stream(make_shared<ifstream>(filename, std::ios_base::binary))
@@ -100,29 +103,36 @@ void elf::read_sections()
     }
 }
 
-elf::sectionbuf elf::get_section(string name)
+elf::sectionstream elf::get_section(string name)
 {
     section sec = sections.at(name);
-    return sectionbuf(stream, sec);
+    return sectionstream(stream, sec);
 }
 
-elf::sectionbuf::sectionbuf(shared_ptr<istream> stream, elf::section sec)
-    : stream(stream), sec(sec)
+elf::sectionstream::sectionstream(std::shared_ptr<std::istream> stream,
+                                  section sec)
+    : istream(stream->rdbuf()), sec(sec), stream(stream)
 {
+    seekg(0);
 }
 
-int elf::sectionbuf::underflow()
+elf::sectionstream::pos_type elf::sectionstream::tellg()
 {
-    char ret;
+    return stream->tellg() - pos_type(sec.offset);
+}
 
-    unsigned long cpos = sec.offset + pos++;
-    if (pos > sec.size)
+elf::sectionstream & elf::sectionstream::seekg(elf::sectionstream::pos_type pos)
+{
+    stream->seekg(pos + pos_type(sec.offset));
+    return *this;
+}
+
+elf::sectionstream::int_type elf::sectionstream::get()
+{
+    if (tellg() > pos_type(sec.size))
         return EOF;
 
-    stream->seekg(cpos);
-    *stream >> ret;
-
-    return ret;
+    return stream->get();
 }
 
 };

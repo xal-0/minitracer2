@@ -4,8 +4,7 @@
 
 #include "debug/elf.hpp"
 
-using std::cout, std::cerr, std::endl;
-using std::ifstream;
+using namespace std;
 
 int main(int argc, char **argv)
 {
@@ -15,13 +14,6 @@ int main(int argc, char **argv)
     }
 
     elf::elf e(argv[1]);
-    auto b = e.get_section(".interp");
-    std::istream is(&b);
-    char c;
 
-    for (int i = 0; i < 3; i++) {
-        is >> c;
-        cout << c << endl;
-
-    }
+    auto s = e.get_section(".interp");
 }

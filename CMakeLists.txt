@@ -11,6 +11,13 @@ else ()
   message ( FATAL_ERROR "unsupported architecture" )
 endif ()
 
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+  add_definitions(-DGCC)
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+endif()
+
 add_executable(test ${sources})
 target_compile_options(test PUBLIC -g -std=c++17 -Wall)
 
