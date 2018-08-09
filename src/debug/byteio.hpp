@@ -8,3 +8,5 @@ T read_obj(std::istream &s)
     s.read(reinterpret_cast<char*>(&x), sizeof(T));
     return x;
 }
+
+uint32_t read_leb(std::istream &s);

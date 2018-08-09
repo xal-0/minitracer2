@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 #include "debug/elf.hpp"
+#include "debug/byteio.hpp"
 
 using namespace std;
 
