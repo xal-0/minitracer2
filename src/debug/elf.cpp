@@ -17,41 +17,41 @@ using namespace std;
 
 namespace elf {
 
-const std::array<uint8_t, 4> elf_magic = { 0x7f, 'E', 'L', 'F' };
+const std::array<u8, 4> elf_magic = { 0x7f, 'E', 'L', 'F' };
 
 STARTPACK
 struct PACK elf_header {
-    uint8_t magic[4];
-    uint8_t fileclass;
-    uint8_t data;
-    uint8_t version0;
-    uint8_t pad[9];
-    uint16_t type;
-    uint16_t machine;
-    uint32_t version1;
-    uintptr_t entry;
-    uintptr_t phoff;
-    uintptr_t shoff;
-    uint32_t flags;
-    uint16_t ehsize;
-    uint16_t phentsize;
-    uint16_t phnum;
-    uint16_t shentsize;
-    uint16_t shnum;
-    uint16_t shstrndx;
+    u8 magic[4];
+    u8 fileclass;
+    u8 data;
+    u8 version0;
+    u8 pad[9];
+    u16 type;
+    u16 machine;
+    u32 version1;
+    uaddr entry;
+    uaddr phoff;
+    uaddr shoff;
+    u32 flags;
+    u16 ehsize;
+    u16 phentsize;
+    u16 phnum;
+    u16 shentsize;
+    u16 shnum;
+    u16 shstrndx;
 };
 
 struct PACK elf_sheader {
-    uint32_t name;
-    uint32_t type;
-    uintptr_t flags;
-    uintptr_t addr;
-    uintptr_t offset;
-    uintptr_t size;
-    uint32_t link;
-    uint32_t info;
-    uintptr_t addralign;
-    uintptr_t entsize;
+    u32 name;
+    u32 type;
+    uaddr flags;
+    uaddr addr;
+    uaddr offset;
+    uaddr size;
+    u32 link;
+    u32 info;
+    uaddr addralign;
+    uaddr entsize;
 };
 ENDPACK
 
@@ -106,33 +106,7 @@ void elf::read_sections()
 elf::sectionstream elf::get_section(string name)
 {
     section sec = sections.at(name);
-    return sectionstream(stream, sec);
-}
-
-elf::sectionstream::sectionstream(std::shared_ptr<std::istream> stream,
-                                  section sec)
-    : istream(stream->rdbuf()), sec(sec), stream(stream)
-{
-    seekg(0);
-}
-
-elf::sectionstream::pos_type elf::sectionstream::tellg()
-{
-    return stream->tellg() - pos_type(sec.offset);
-}
-
-elf::sectionstream & elf::sectionstream::seekg(elf::sectionstream::pos_type pos)
-{
-    stream->seekg(pos + pos_type(sec.offset));
-    return *this;
-}
-
-elf::sectionstream::int_type elf::sectionstream::get()
-{
-    if (tellg() > pos_type(sec.size))
-        return EOF;
-
-    return stream->get();
+    // return sectionstream(stream, sec);
 }
 
 };

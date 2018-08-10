@@ -1,6 +1,24 @@
 #include <istream>
 #include <cstdint>
 
+typedef uint8_t u8;
+typedef uint16_t u16;
+typedef uint32_t u32;
+typedef uint64_t u64;
+
+typedef int8_t i8;
+typedef int16_t i16;
+typedef int32_t i32;
+typedef int64_t i64;
+
+#if X86
+typedef uint32_t uaddr;
+#elif AMD64
+typedef uint64_t uaddr;
+#else
+#error "unsupported platform"
+#endif
+
 template <typename T>
 T read_obj(std::istream &s)
 {
@@ -9,4 +27,4 @@ T read_obj(std::istream &s)
     return x;
 }
 
-uint32_t read_leb(std::istream &s);
+u32 read_leb(std::istream &s);

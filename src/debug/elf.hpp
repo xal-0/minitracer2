@@ -23,8 +23,8 @@ const unsigned elf_off = 8;
 class elf {
     class section {
     public:
-        uintptr_t offset;
-        uintptr_t size;
+        size_t offset;
+        size_t size;
     };
 
 public:
