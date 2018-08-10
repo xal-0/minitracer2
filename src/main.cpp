@@ -13,7 +13,8 @@ int main(int argc, char **argv)
         cerr << "wrong number of arguments" << endl;
         exit(1);
     }
-    
-    elf::elf e(argv[1]);
-    // auto s = e.get_section(".interp");
+
+    ifstream stream {argv[1], ios_base::in | ios_base::binary};
+    elf::elf e {stream};
+    elf::elf::section s = e.get_section(".interp");
 }

@@ -55,13 +55,7 @@ struct PACK elf_sheader {
 };
 ENDPACK
 
-elf::elf(string filename)
-    : stream(make_shared<ifstream>(filename, std::ios_base::binary))
-{
-    read_sections();
-}
-
-elf::elf(shared_ptr<istream> stream)
+elf::elf(istream &stream)
     : stream(stream)
 {
     read_sections();
@@ -69,9 +63,9 @@ elf::elf(shared_ptr<istream> stream)
 
 void elf::read_sections()
 {
-    stream->exceptions(ios_base::badbit | ios_base::failbit | ios_base::eofbit);
+    stream.exceptions(ios_base::badbit | ios_base::failbit | ios_base::eofbit);
 
-    elf_header h = read_obj<elf_header>(*stream);
+    elf_header h = read_obj<elf_header>(stream);
 
     if (!equal(begin(h.magic), end(h.magic), elf_magic.begin()))
         throw invalid_argument{"not an elf file (wrong magic)"};
@@ -85,28 +79,27 @@ void elf::read_sections()
     if (h.data != 1)
         throw invalid_argument{"only native byte ordering is supported\n"};
 
-    stream->seekg(h.shoff + h.shentsize*h.shstrndx);
+    stream.seekg(h.shoff + h.shentsize*h.shstrndx);
 
-    elf_sheader shstr = read_obj<elf_sheader>(*stream);
-    stream->seekg(shstr.offset);
+    elf_sheader shstr = read_obj<elf_sheader>(stream);
+    stream.seekg(shstr.offset);
 
     vector<char> raw_shstrtab;
     raw_shstrtab.reserve(shstr.size);
-    copy_n(istream_iterator<char>(*stream), shstr.size, raw_shstrtab.begin());
+    copy_n(istream_iterator<char>(stream), shstr.size, raw_shstrtab.begin());
 
-    stream->seekg(h.shoff);
+    stream.seekg(h.shoff);
 
     for (int i = 0; i < h.shnum; i++) {
-        elf_sheader sec = read_obj<elf_sheader>(*stream);
+        elf_sheader sec = read_obj<elf_sheader>(stream);
         string name{&raw_shstrtab[sec.name]};
         sections[name] = { sec.offset, sec.size };
     }
 }
 
-elf::sectionstream elf::get_section(string name)
+elf::section elf::get_section(string name)
 {
-    section sec = sections.at(name);
-    // return sectionstream(stream, sec);
+    return sections.at(name);
 }
 
 };

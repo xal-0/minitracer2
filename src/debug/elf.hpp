@@ -21,37 +21,20 @@ const unsigned elf_off = 8;
 #endif
 
 class elf {
+public:
     class section {
     public:
         size_t offset;
         size_t size;
     };
 
-public:
-    class sectionstream : public std::istream {
-    public:
-        sectionstream(std::shared_ptr<std::istream>,
-                      section sec);
+    elf(std::istream &stream);
 
-        pos_type tellg();
-        sectionstream & seekg(pos_type pos);
-
-        int_type get();
-        
-        section sec;
-
-    private:
-        std::shared_ptr<std::istream> stream;
-    };
-    
-    elf(std::string filename);
-    elf(std::shared_ptr<std::istream> stream);
-
-    sectionstream get_section(std::string name);
+    section get_section(std::string name);
 
 private:
     void read_sections();
-    std::shared_ptr<std::istream> stream;
+    std::istream &stream;
     std::map<std::string, section> sections;
 };
 
