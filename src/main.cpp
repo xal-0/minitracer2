@@ -2,7 +2,7 @@
 #include <fstream>
 #include <cstdlib>
 
-#include "debug/elf.hpp"
+#include "debug/dwarf.hpp"
 #include "debug/byteio.hpp"
 
 using namespace std;
@@ -15,6 +15,6 @@ int main(int argc, char **argv)
     }
 
     ifstream stream {argv[1], ios_base::in | ios_base::binary};
-    elf::elf e {stream};
-    elf::elf::section s = e.get_section(".interp");
+    dwarf::dwarf d {stream};
+    d.read_linenums();
 }
