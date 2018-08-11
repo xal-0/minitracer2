@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 
 #include "elf.hpp"
 #include "arch/arch.hpp"
@@ -37,6 +38,8 @@ protected:
     private:
         linenum_header header;
         std::vector<u8> standard_opcode_lengths;
+        std::vector<std::string> include_directories;
+        std::vector<std::string> file_names;
     };
 
 private:

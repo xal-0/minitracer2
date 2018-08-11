@@ -14,3 +14,10 @@ uint32_t read_leb(std::istream &s)
 
     return ret;
 }
+
+std::string read_str(std::istream &s)
+{
+    std::string str;
+    std::getline(s, str, '\0');
+    return str;
+}

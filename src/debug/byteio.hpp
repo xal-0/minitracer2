@@ -2,6 +2,7 @@
 
 #include <istream>
 #include <cstdint>
+#include <string>
 
 typedef uint8_t u8;
 typedef uint16_t u16;
@@ -30,3 +31,4 @@ T read_obj(std::istream &s)
 }
 
 u32 read_leb(std::istream &s);
+std::string read_str(std::istream &s);

@@ -36,6 +36,15 @@ dwarf::linenum_prog::linenum_prog(istream &stream)
     for (int i = 0; i < header.opcode_base - 1; i++)
         standard_opcode_lengths[i] = read_obj<u8>(stream);
 
+
+    std::string dir;
+    while (!(dir = read_str(stream)).empty())
+        include_directories.push_back(dir);
+
+    std::string file;
+    while (!(file = read_str(stream)).empty())
+        file_names.push_back(file);
+
     
 }
 
