@@ -2,10 +2,10 @@
 
 using namespace std;
 
-namespace dwarf {
+namespace minitracer {
 
 dwarf::dwarf(istream &stream)
-    : stream(stream), elf(stream)
+    : stream(stream), binary(stream)
 {}
 
 size_t soffset;
@@ -14,7 +14,7 @@ void dwarf::read_linenums()
 {
     elf::elf::section sec;
     try {
-        sec = elf.get_section(".debug_line");
+        sec = binary.get_section(".debug_line");
     } catch (const out_of_range &e) {
         throw invalid_argument("no DWARF linenum info found");
     }
@@ -27,7 +27,7 @@ void dwarf::read_linenums()
         linenum_prog p {*this};
 
     for (const auto &x : line_mappings)
-        cout << hex << x.address << "\t\t\t" << x.file->filename << ":" << dec << x.line << "\n";
+        cout << hex << x.address << "\t" << x.file->filename << ":" << dec << x.line << "\n";
 }
 
 bool operator<(const dwarf::meta_file &a, const dwarf::meta_file &b)

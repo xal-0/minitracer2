@@ -6,6 +6,7 @@
 #include "debug/byteio.hpp"
 
 using namespace std;
+using namespace minitracer;
 
 int main(int argc, char **argv)
 {
@@ -15,6 +16,6 @@ int main(int argc, char **argv)
     }
 
     ifstream stream {argv[1], ios_base::in | ios_base::binary};
-    dwarf::dwarf d {stream};
+    dwarf d {stream};
     d.read_linenums();
 }

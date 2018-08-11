@@ -1,5 +1,7 @@
 #include "byteio.hpp"
 
+namespace minitracer {
+
 u32 read_leb(std::istream &s)
 {
     u32 ret = 0;
@@ -39,3 +41,5 @@ std::string read_str(std::istream &s)
     std::getline(s, str, '\0');
     return str;
 }
+
+};

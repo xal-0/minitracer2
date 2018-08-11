@@ -9,7 +9,7 @@
 #include "arch/arch.hpp"
 #include "byteio.hpp"
 
-namespace dwarf {
+namespace minitracer {
 
 class dwarf {
 public:
@@ -76,7 +76,7 @@ protected:
 
 private:
     std::istream &stream;
-    elf::elf elf;
+    elf binary;
 
     std::set<std::string> include_directories;
     std::set<meta_file> file_names;
