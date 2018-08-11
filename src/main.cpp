@@ -4,6 +4,7 @@
 
 #include "debug/dwarf.hpp"
 #include "debug/byteio.hpp"
+#include "debug/sectioned.hpp"
 
 using namespace std;
 using namespace minitracer;

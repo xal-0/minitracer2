@@ -5,17 +5,12 @@
 
 #include "arch/arch.hpp"
 #include "byteio.hpp"
+#include "sectioned.hpp"
 
 namespace minitracer {
 
-class elf {
+class elf : public sectioned_binary {
 public:
-    class section {
-    public:
-        size_t offset;
-        size_t size;
-    };
-
     elf(std::istream &stream);
 
     section get_section(std::string name);
