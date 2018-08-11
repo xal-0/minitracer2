@@ -31,4 +31,5 @@ T read_obj(std::istream &s)
 }
 
 u32 read_leb(std::istream &s);
+i32 read_sleb(std::istream &s);
 std::string read_str(std::istream &s);

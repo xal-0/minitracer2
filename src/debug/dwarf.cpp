@@ -134,7 +134,7 @@ void dwarf::linenum_prog::execute_standard(dwarf &d, u8 op)
         break;
 
     case 3:
-        line += read_leb(d.stream);
+        line += read_sleb(d.stream);
         break;
 
     case 4:
