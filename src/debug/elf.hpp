@@ -1,12 +1,7 @@
 #pragma once
 
-#include <cstdint>
-#include <iostream>
-#include <array>
-#include <string>
 #include <map>
-#include <memory>
-#include <streambuf>
+#include <iostream>
 
 namespace elf {
 
@@ -32,8 +27,10 @@ public:
 
     section get_section(std::string name);
 
-private:
+protected:
     void read_sections();
+
+private:
     std::istream &stream;
     std::map<std::string, section> sections;
 };

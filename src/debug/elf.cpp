@@ -1,13 +1,6 @@
-#include <istream>
-#include <iostream>
-#include <stdexcept>
+#include <vector>
 #include <iterator>
 #include <algorithm>
-#include <vector>
-#include <string>
-#include <map>
-#include <fstream>
-#include <ios>
 
 #include "elf.hpp"
 #include "byteio.hpp"
