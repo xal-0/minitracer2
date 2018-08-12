@@ -6,7 +6,7 @@
 #include <set>
 
 #include "elf.hpp"
-#include "arch/arch.hpp"
+#include "../arch/arch.hpp"
 #include "byteio.hpp"
 #include "debuginfo.hpp"
 

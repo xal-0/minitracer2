@@ -67,7 +67,11 @@ dwarf::linenum_prog::linenum_prog(dwarf &d)
     while (!(filename = read_str(d.stream)).empty()) {
         meta_file file;
         file.filename = filename;
-        file.directory = include_directories[read_leb(d.stream)];
+        u32 dir = read_leb(d.stream);
+        if (!dir)
+            file.directory = nullptr;
+        else
+            file.directory = include_directories[dir - 1];
         file.last_modified = read_leb(d.stream);
         file.len = read_leb(d.stream);
         const meta_file *ref = &*d.file_names.insert(file).first;

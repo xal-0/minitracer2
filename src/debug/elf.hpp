@@ -3,7 +3,7 @@
 #include <map>
 #include <iostream>
 
-#include "arch/arch.hpp"
+#include "../arch/arch.hpp"
 #include "byteio.hpp"
 #include "sectioned.hpp"
 

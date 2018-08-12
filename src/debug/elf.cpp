@@ -4,7 +4,7 @@
 
 #include "elf.hpp"
 #include "byteio.hpp"
-#include "arch/arch.hpp"
+#include "../arch/arch.hpp"
 
 using namespace std;
 
