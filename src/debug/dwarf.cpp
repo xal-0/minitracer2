@@ -1,14 +1,16 @@
+#include <algorithm>
+
 #include "dwarf.hpp"
 
 using namespace std;
 
 namespace minitracer {
 
-dwarf::dwarf(istream &stream)
-    : stream(stream), binary(stream)
-{}
-
-size_t soffset;
+dwarf::dwarf(istream &stream, sectioned_binary &binary)
+    : stream(stream), binary(binary)
+{
+    read_linenums();
+}
 
 void dwarf::read_linenums()
 {
@@ -21,18 +23,23 @@ void dwarf::read_linenums()
 
     stream.seekg(sec.offset);
 
-    soffset = sec.offset;
-
     while (stream.tellg() < static_cast<long>(sec.size + sec.offset)) 
         linenum_prog p {*this};
-
-    for (const auto &x : line_mappings)
-        cout << hex << x.address << "\t" << x.file->filename << ":" << dec << x.line << "\n";
 }
 
-bool operator<(const dwarf::meta_file &a, const dwarf::meta_file &b)
+dwarf::line_map dwarf::get_linenum(uaddr addr)
 {
-    return a.filename < b.filename;
+    auto it = find_if(line_mappings.begin(),
+                      line_mappings.end(),
+                      [addr](const line_map &m){
+                          return addr < m.address;
+                      });
+
+    if (it == line_mappings.begin())
+        throw invalid_argument("no such address found");
+    it--;
+
+    return *it;
 }
 
 dwarf::linenum_prog::linenum_prog(dwarf &d)
@@ -149,11 +156,6 @@ void dwarf::linenum_prog::execute_standard(dwarf &d, u8 op)
         for (int i = 0; i < standard_opcode_lengths[op - 1]; i++)
             read_leb(d.stream);
     }
-}
-
-bool operator<(dwarf::line_map const &a, dwarf::line_map const &b)
-{
-    return a.address < b.address;
 }
 
 void dwarf::linenum_prog::copy_matrix(dwarf &d)

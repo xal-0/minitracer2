@@ -8,31 +8,15 @@
 #include "elf.hpp"
 #include "arch/arch.hpp"
 #include "byteio.hpp"
+#include "debuginfo.hpp"
 
 namespace minitracer {
 
-class dwarf {
+class dwarf : public debug_info {
 public:
-    dwarf(std::istream &stream);
+    dwarf(std::istream &stream, sectioned_binary &bin);
     
-    void read_linenums();
-
-    struct meta_file {
-        std::string filename;
-        const std::string *directory;
-        u32 last_modified;
-        u32 len;
-
-        friend bool operator<(meta_file const &a, meta_file const &b);
-    };
-
-    struct line_map {
-        uaddr address;
-        const meta_file *file;
-        u32 line;
-
-        friend bool operator<(line_map const &a, line_map const &b);
-    };
+    line_map get_linenum(uaddr addr);
 
 protected:
     class linenum_prog {
@@ -74,9 +58,11 @@ protected:
         bool end_sequence = false;
     };
 
+    void read_linenums();
+
 private:
     std::istream &stream;
-    elf binary;
+    sectioned_binary &binary;
 
     std::set<std::string> include_directories;
     std::set<meta_file> file_names;

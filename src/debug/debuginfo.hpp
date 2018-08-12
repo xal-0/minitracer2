@@ -1,5 +1,7 @@
 #pragma once
 
+#include "byteio.hpp"
+
 namespace minitracer {
 
 class debug_info {
@@ -21,7 +23,7 @@ public:
         friend bool operator<(line_map const &a, line_map const &b);
     };
 
-    virtual line_map get_linenum() = 0;
+    virtual line_map get_linenum(uaddr addr) = 0;
 };
 
 };
