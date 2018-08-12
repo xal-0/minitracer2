@@ -29,5 +29,8 @@ int main(int argc, char **argv)
     ss >> addr;
 
     auto m = d.get_linenum(addr);
-    cout << hex << m.address << "\t\t" << m.file->filename << ":" << dec << m.line << "\n";
+    cout << hex << m.address << "\t\t"
+         << *m.file->directory << "/"
+         << m.file->filename << ":"
+         << dec << m.line << "\n";
 }
