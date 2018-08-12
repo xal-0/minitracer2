@@ -92,21 +92,18 @@ void dwarf::linenum_prog::execute(dwarf &d)
         execute_extended(d);
     else if (op < header.opcode_base)
         execute_standard(d, op);
-    else {
-        line += header.line_base +
-            ((op - header.opcode_base) % header.line_range);
-        address += ((op - header.opcode_base) / header.line_range)
-            * header.minimum_instruction_length;
-        basic_block = false;
-
-        copy_matrix(d);
-    }
+    else 
+        execute_special(d, op);
 }
 
 void dwarf::linenum_prog::execute_extended(dwarf &d)
 {
     u32 len = read_leb(d.stream);
     u8 op = read_obj<u8>(d.stream);
+
+    meta_file dfile;
+    u32 dir;
+    const meta_file *ref;
 
     switch (op) {
     case 1:
@@ -125,6 +122,20 @@ void dwarf::linenum_prog::execute_extended(dwarf &d)
 
     case 2:
         address = read_obj<uaddr>(d.stream);
+        break;
+
+    case 3:
+        dfile.filename = read_str(d.stream);
+        dir = read_leb(d.stream);
+        if (!dir)
+            dfile.directory = nullptr;
+        else
+            dfile.directory = include_directories[dir - 1];
+        dfile.last_modified = read_leb(d.stream);
+        dfile.len = read_leb(d.stream);
+        
+        ref = &*d.file_names.insert(dfile).first;
+        file_names.push_back(ref);
         break;
 
     default:
@@ -156,10 +167,39 @@ void dwarf::linenum_prog::execute_standard(dwarf &d, u8 op)
         column = read_leb(d.stream);
         break;
 
+    case 6:
+        is_stmt = !is_stmt;
+        break;
+
+    case 7:
+        basic_block = true;
+        break;
+
+    case 8:
+        address += ((255 - header.opcode_base) / header.line_range)
+            * header.minimum_instruction_length;
+        break;
+
+    case 9:
+        address += read_obj<u16>(d.stream);
+        break;
+        
     default:
         for (int i = 0; i < standard_opcode_lengths[op - 1]; i++)
             read_leb(d.stream);
+        break;
     }
+}
+
+void dwarf::linenum_prog::execute_special(dwarf &d, u8 op)
+{
+    line += header.line_base +
+        ((op - header.opcode_base) % header.line_range);
+    address += ((op - header.opcode_base) / header.line_range)
+        * header.minimum_instruction_length;
+    basic_block = false;
+
+    copy_matrix(d);
 }
 
 void dwarf::linenum_prog::copy_matrix(dwarf &d)

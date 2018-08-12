@@ -40,6 +40,7 @@ protected:
         void execute(dwarf &d);
         void execute_extended(dwarf &d);
         void execute_standard(dwarf &d, u8 op);
+        void execute_special(dwarf &d, u8 op);
 
         void copy_matrix(dwarf &d);
 
