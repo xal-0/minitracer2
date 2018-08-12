@@ -23,7 +23,7 @@ void dwarf::read_linenums()
 
     stream.seekg(sec.offset);
 
-    while (stream.tellg() < static_cast<long>(sec.size + sec.offset)) 
+    while (stream.tellg() < static_cast<long>(sec.size + sec.offset))
         linenum_prog p {*this};
 }
 
@@ -80,7 +80,7 @@ dwarf::linenum_prog::linenum_prog(dwarf &d)
 
     is_stmt = header.default_is_stmt;
 
-    while (d.stream.tellg() < header.unit_length + start + 4) 
+    while (d.stream.tellg() < header.unit_length + start + 4)
         execute(d);
 }
 
@@ -92,7 +92,7 @@ void dwarf::linenum_prog::execute(dwarf &d)
         execute_extended(d);
     else if (op < header.opcode_base)
         execute_standard(d, op);
-    else 
+    else
         execute_special(d, op);
 }
 
@@ -133,7 +133,7 @@ void dwarf::linenum_prog::execute_extended(dwarf &d)
             dfile.directory = include_directories[dir - 1];
         dfile.last_modified = read_leb(d.stream);
         dfile.len = read_leb(d.stream);
-        
+
         ref = &*d.file_names.insert(dfile).first;
         file_names.push_back(ref);
         break;
@@ -183,7 +183,7 @@ void dwarf::linenum_prog::execute_standard(dwarf &d, u8 op)
     case 9:
         address += read_obj<u16>(d.stream);
         break;
-        
+
     default:
         for (int i = 0; i < standard_opcode_lengths[op - 1]; i++)
             read_leb(d.stream);
