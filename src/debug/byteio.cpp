@@ -9,7 +9,7 @@ u32 read_leb(std::istream &s)
 
     u32 b;
     do {
-        b = s.get();
+        b = static_cast<u32>(s.get());
         ret |= (b & 0x7f) << shift;
         shift += 7;
     } while (b & 0x80);
@@ -24,13 +24,13 @@ i32 read_sleb(std::istream &s)
 
     u32 b;
     do {
-        b = s.get();
+        b = static_cast<u32>(s.get());
         ret |= (b & 0x7f) << shift;
         shift += 7;
     } while (b & 0x80);
     
     if (b & 0x40)
-        ret |= (~0 << shift);
+        ret |= (~static_cast<u32>(0) << shift);
 
     return ret;
 }
@@ -42,4 +42,4 @@ std::string read_str(std::istream &s)
     return str;
 }
 
-};
+}

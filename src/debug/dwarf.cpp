@@ -17,11 +17,11 @@ void dwarf::read_linenums()
     elf::elf::section sec;
     try {
         sec = binary.get_section(".debug_line");
-    } catch (const out_of_range &e) {
+    } catch (const out_of_range &) {
         throw invalid_argument("no DWARF linenum info found");
     }
 
-    stream.seekg(sec.offset);
+    stream.seekg(static_cast<streamoff>(sec.offset));
 
     while (stream.tellg() < static_cast<long>(sec.size + sec.offset))
         linenum_prog p {*this};
@@ -44,7 +44,7 @@ dwarf::line_map dwarf::get_linenum(uaddr addr)
 
 dwarf::linenum_prog::linenum_prog(dwarf &d)
 {
-    u32 start = d.stream.tellg();
+    long start = d.stream.tellg();
     header = read_obj<linenum_header>(d.stream);
 
     if (header.unit_length == 0xffffffff)
@@ -57,24 +57,24 @@ dwarf::linenum_prog::linenum_prog(dwarf &d)
     for (int i = 0; i < header.opcode_base - 1; i++)
         standard_opcode_lengths.push_back(read_obj<u8>(d.stream));
 
-    string dir;
-    while (!(dir = read_str(d.stream)).empty()) {
-        const string *ref = &*d.include_directories.insert(dir).first;
+    string dirname;
+    while (!(dirname = read_str(d.stream)).empty()) {
+        const string *ref = &*d.include_directories.insert(dirname).first;
         include_directories.push_back(ref);
     }
 
     string filename;
     while (!(filename = read_str(d.stream)).empty()) {
-        meta_file file;
-        file.filename = filename;
+        meta_file dfile;
+        dfile.filename = filename;
         u32 dir = read_leb(d.stream);
         if (!dir)
-            file.directory = nullptr;
+            dfile.directory = nullptr;
         else
-            file.directory = include_directories[dir - 1];
-        file.last_modified = read_leb(d.stream);
-        file.len = read_leb(d.stream);
-        const meta_file *ref = &*d.file_names.insert(file).first;
+            dfile.directory = include_directories[dir - 1];
+        dfile.last_modified = read_leb(d.stream);
+        dfile.len = read_leb(d.stream);
+        const meta_file *ref = &*d.file_names.insert(dfile).first;
         file_names.push_back(ref);
     }
 
@@ -156,7 +156,7 @@ void dwarf::linenum_prog::execute_standard(dwarf &d, u8 op)
         break;
 
     case 3:
-        line += read_sleb(d.stream);
+        line += static_cast<u32>(read_sleb(d.stream));
         break;
 
     case 4:
@@ -193,7 +193,7 @@ void dwarf::linenum_prog::execute_standard(dwarf &d, u8 op)
 
 void dwarf::linenum_prog::execute_special(dwarf &d, u8 op)
 {
-    line += header.line_base +
+    line += static_cast<u32>(header.line_base) +
         ((op - header.opcode_base) % header.line_range);
     address += ((op - header.opcode_base) / header.line_range)
         * header.minimum_instruction_length;
@@ -212,4 +212,4 @@ void dwarf::linenum_prog::copy_matrix(dwarf &d)
     d.line_mappings.insert(m);
 }
 
-};
+}

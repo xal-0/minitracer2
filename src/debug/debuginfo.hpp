@@ -24,6 +24,8 @@ public:
     };
 
     virtual line_map get_linenum(uaddr addr) = 0;
+
+    virtual ~debug_info() = default;
 };
 
-};
+}

@@ -12,6 +12,8 @@ public:
     };
 
     virtual section get_section(std::string name) = 0;
+
+    virtual ~sectioned_binary() = default;
 };
 
-};
+}

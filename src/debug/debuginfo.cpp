@@ -12,4 +12,4 @@ bool operator<(debug_info::line_map const &a, debug_info::line_map const &b)
     return a.address < b.address;
 }
 
-};
+}

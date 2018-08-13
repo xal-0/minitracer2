@@ -71,4 +71,4 @@ private:
     std::set<line_map> line_mappings;
 };
 
-};
+}

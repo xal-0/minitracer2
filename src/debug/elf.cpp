@@ -34,16 +34,16 @@ void elf::read_sections()
     if (h.data != 1)
         throw invalid_argument{"only native byte ordering is supported\n"};
 
-    stream.seekg(h.shoff + h.shentsize*h.shstrndx);
+    stream.seekg(static_cast<streamoff>(h.shoff + h.shentsize*h.shstrndx));
 
     elf_sheader shstr = read_obj<elf_sheader>(stream);
-    stream.seekg(shstr.offset);
+    stream.seekg(static_cast<streamoff>(shstr.offset));
 
     vector<char> raw_shstrtab;
     raw_shstrtab.reserve(shstr.size);
     copy_n(istream_iterator<char>(stream), shstr.size, raw_shstrtab.begin());
 
-    stream.seekg(h.shoff);
+    stream.seekg(static_cast<streamoff>(h.shoff));
 
     for (int i = 0; i < h.shnum; i++) {
         elf_sheader sec = read_obj<elf_sheader>(stream);
@@ -57,4 +57,4 @@ elf::section elf::get_section(string name)
     return sections.at(name);
 }
 
-};
+}

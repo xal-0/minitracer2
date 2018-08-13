@@ -14,9 +14,9 @@ typedef int16_t i16;
 typedef int32_t i32;
 typedef int64_t i64;
 
-#if X86
+#if defined X86
 typedef uint32_t uaddr;
-#elif AMD64
+#elif defined AMD64
 typedef uint64_t uaddr;
 #else
 #error "unsupported platform"
@@ -36,4 +36,4 @@ u32 read_leb(std::istream &s);
 i32 read_sleb(std::istream &s);
 std::string read_str(std::istream &s);
 
-};
+}

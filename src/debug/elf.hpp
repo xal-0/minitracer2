@@ -16,14 +16,14 @@ public:
     section get_section(std::string name);
 
 protected:
-    const std::array<u8, 4> elf_magic = { 0x7f, 'E', 'L', 'F' };
+    static constexpr std::array<u8, 4> elf_magic = {{ 0x7f, 'E', 'L', 'F' }};
 
-#if X86
-    const unsigned elf_bits = 32;
-    const unsigned elf_off = 4;
-#elif AMD64
-    const unsigned elf_bits = 64;
-    const unsigned elf_off = 8;
+#if defined X86
+    static const unsigned elf_bits = 32;
+    static const unsigned elf_off = 4;
+#elif defined AMD64
+    static const unsigned elf_bits = 64;
+    static const unsigned elf_off = 8;
 #else
 #error "unsupported platform"
 #endif
@@ -71,4 +71,4 @@ private:
     std::map<std::string, section> sections;
 };
 
-};
+}
