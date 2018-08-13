@@ -2,7 +2,9 @@
 
 #include "dwarf.hpp"
 
-using namespace std;
+using std::istream, std::ios_base, std::streamoff;
+using std::invalid_argument, std::out_of_range;
+using std::string;
 
 namespace minitracer {
 
@@ -14,7 +16,7 @@ dwarf::dwarf(istream &stream, sectioned_binary &binary)
 
 void dwarf::read_linenums()
 {
-    elf::elf::section sec;
+    elf::section sec {};
     try {
         sec = binary.get_section(".debug_line");
     } catch (const out_of_range &) {
@@ -23,7 +25,7 @@ void dwarf::read_linenums()
 
     stream.seekg(static_cast<streamoff>(sec.offset));
 
-    while (stream.tellg() < static_cast<long>(sec.size + sec.offset))
+    while (stream.tellg() < static_cast<istream::pos_type>(sec.size + sec.offset))
         linenum_prog p {*this};
 }
 
@@ -44,9 +46,9 @@ dwarf::line_map dwarf::get_linenum(uaddr addr)
 
 dwarf::linenum_prog::linenum_prog(dwarf &d)
 {
-    long start = d.stream.tellg();
+    istream::pos_type start = d.stream.tellg();
     header = read_obj<linenum_header>(d.stream);
-
+    
     if (header.unit_length == 0xffffffff)
         throw invalid_argument("only 32-bit DWARF is supported");
 
@@ -86,7 +88,7 @@ dwarf::linenum_prog::linenum_prog(dwarf &d)
 
 void dwarf::linenum_prog::execute(dwarf &d)
 {
-    u8 op = read_obj<u8>(d.stream);
+    auto op = read_obj<u8>(d.stream);
 
     if (op == 0)
         execute_extended(d);
@@ -99,7 +101,7 @@ void dwarf::linenum_prog::execute(dwarf &d)
 void dwarf::linenum_prog::execute_extended(dwarf &d)
 {
     u32 len = read_leb(d.stream);
-    u8 op = read_obj<u8>(d.stream);
+    auto op = read_obj<u8>(d.stream);
 
     meta_file dfile;
     u32 dir;
@@ -204,10 +206,11 @@ void dwarf::linenum_prog::execute_special(dwarf &d, u8 op)
 
 void dwarf::linenum_prog::copy_matrix(dwarf &d)
 {
-    line_map m;
-    m.address = address;
-    m.line = line;
-    m.file = file_names[file - 1];
+    line_map m {
+        address,
+        file_names[file - 1],
+        line,
+    };
 
     d.line_mappings.insert(m);
 }

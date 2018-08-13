@@ -13,7 +13,7 @@ class elf : public sectioned_binary {
 public:
     elf(std::istream &stream);
 
-    section get_section(std::string name);
+    section get_section(std::string name) override;
 
 protected:
     static constexpr std::array<u8, 4> elf_magic = {{ 0x7f, 'E', 'L', 'F' }};

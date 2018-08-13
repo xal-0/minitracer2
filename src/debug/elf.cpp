@@ -1,12 +1,16 @@
-#include <vector>
-#include <iterator>
 #include <algorithm>
+#include <iterator>
+#include <vector>
 
 #include "elf.hpp"
-#include "byteio.hpp"
 #include "../arch/arch.hpp"
+#include "byteio.hpp"
 
-using namespace std;
+using std::istream, std::ios_base, std::streamoff, std::istream_iterator;
+using std::equal, std::begin, std::end;
+using std::invalid_argument;
+using std::string, std::to_string;
+using std::vector;
 
 namespace minitracer {
 
@@ -20,7 +24,7 @@ void elf::read_sections()
 {
     stream.exceptions(ios_base::badbit | ios_base::failbit | ios_base::eofbit);
 
-    elf_header h = read_obj<elf_header>(stream);
+    auto h = read_obj<elf_header>(stream);
 
     if (!equal(begin(h.magic), end(h.magic), elf_magic.begin()))
         throw invalid_argument{"not an elf file (wrong magic)"};
@@ -36,7 +40,7 @@ void elf::read_sections()
 
     stream.seekg(static_cast<streamoff>(h.shoff + h.shentsize*h.shstrndx));
 
-    elf_sheader shstr = read_obj<elf_sheader>(stream);
+    auto shstr = read_obj<elf_sheader>(stream);
     stream.seekg(static_cast<streamoff>(shstr.offset));
 
     vector<char> raw_shstrtab;
@@ -46,7 +50,7 @@ void elf::read_sections()
     stream.seekg(static_cast<streamoff>(h.shoff));
 
     for (int i = 0; i < h.shnum; i++) {
-        elf_sheader sec = read_obj<elf_sheader>(stream);
+        auto sec = read_obj<elf_sheader>(stream);
         string name{&raw_shstrtab[sec.name]};
         sections[name] = { sec.offset, sec.size };
     }

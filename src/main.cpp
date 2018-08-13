@@ -1,42 +1,39 @@
-#include <iostream>
-#include <fstream>
 #include <cstdlib>
+#include <fstream>
+#include <iostream>
 #include <sstream>
 
-#include "debug/elf.hpp"
-#include "debug/dwarf.hpp"
 #include "debug/byteio.hpp"
+#include "debug/dwarf.hpp"
+#include "debug/elf.hpp"
 #include "debug/sectioned.hpp"
-
-using namespace std;
-using namespace minitracer;
 
 int main(int argc, char **argv)
 {
     if (argc != 3) {
-        cerr << "wrong number of arguments" << endl;
+        std::cerr << "wrong number of arguments\n";
         exit(1);
     }
 
-    ifstream stream {argv[1], ios_base::in | ios_base::binary};
-    elf binary {stream};
-    dwarf d {stream, binary};
+    std::ifstream stream {argv[1], std::ios_base::in | std::ios_base::binary};
+    minitracer::elf binary {stream};
+    minitracer::dwarf d {stream, binary};
 
-    stringstream ss;
-    ss << hex << argv[2];
+    std::stringstream ss;
+    ss << std::hex << argv[2];
 
-    uaddr addr;
+    minitracer::uaddr addr;
     ss >> addr;
 
     auto m = d.get_linenum(addr);
 
     if (m.file->directory)
-        cout << hex << m.address << "\t\t"
-             << *m.file->directory << "/"
-             << m.file->filename << ":"
-             << dec << m.line << "\n";
+        std::cout << std::hex << m.address << "\t\t"
+                  << *m.file->directory << "/"
+                  << m.file->filename << ":"
+                  << std::dec << m.line << "\n";
     else
-        cout << hex << m.address << "\t\t"
-             << m.file->filename << ":"
-             << dec << m.line << "\n";
+        std::cout << std::hex << m.address << "\t\t"
+                  << m.file->filename << ":"
+                  << std::dec << m.line << "\n";
 }

@@ -1,22 +1,22 @@
 #pragma once
 
 #include <iostream>
-#include <vector>
-#include <string>
 #include <set>
+#include <string>
+#include <vector>
 
-#include "elf.hpp"
 #include "../arch/arch.hpp"
 #include "byteio.hpp"
 #include "debuginfo.hpp"
+#include "elf.hpp"
 
 namespace minitracer {
 
 class dwarf : public debug_info {
 public:
-    dwarf(std::istream &stream, sectioned_binary &bin);
+    dwarf(std::istream &stream, sectioned_binary &binary);
     
-    line_map get_linenum(uaddr addr);
+    line_map get_linenum(uaddr addr) override;
 
 protected:
     class linenum_prog {
@@ -45,7 +45,7 @@ protected:
         void copy_matrix(dwarf &d);
 
     private:
-        linenum_header header;
+        linenum_header header {};
         std::vector<u8> standard_opcode_lengths;
         std::vector<const std::string *> include_directories;
         std::vector<const meta_file *> file_names;

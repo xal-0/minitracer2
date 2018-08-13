@@ -1,3 +1,5 @@
+#pragma once
+
 #if defined GCC || defined CLANG
 #include "gcc/gcc.hpp"
 #else
