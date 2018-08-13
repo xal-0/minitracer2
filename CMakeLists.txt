@@ -20,7 +20,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 endif()
 
 add_executable(test ${sources})
-target_compile_options(test PUBLIC -g -Wall -Wextra -Wpedantic -Werror -std=c++17)
+target_compile_options(test PUBLIC -g -Wall -Wpedantic -Werror -std=c++17)
 
 target_include_directories(test PUBLIC src/)
 

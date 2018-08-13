@@ -12,6 +12,7 @@ namespace minitracer {
 class elf : public sectioned_binary {
 public:
     elf(std::istream &stream);
+    ~elf() = default;
 
     section get_section(std::string name) override;
 

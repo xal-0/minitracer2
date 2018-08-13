@@ -15,6 +15,7 @@ namespace minitracer {
 class dwarf : public debug_info {
 public:
     dwarf(std::istream &stream, sectioned_binary &binary);
+    ~dwarf() = default;
     
     line_map get_linenum(uaddr addr) override;
 
