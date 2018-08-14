@@ -2,6 +2,9 @@
 
 #include <array>
 #include <iostream>
+#include <map>
+#include <string>
+#include <vector>
 
 #include "../arch/arch.hpp"
 #include "byteio.hpp"
@@ -96,9 +99,12 @@ protected:
     ENDPACK
 
     void read_sections();
+    void decode_sections(std::vector<char> &strtab,
+                         std::vector<section_header> &sectab);
 
 private:
     std::istream &stream;
+    std::map<std::string, section> sections;
 };
 
 }

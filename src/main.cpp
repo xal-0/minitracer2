@@ -17,5 +17,4 @@ int main(int argc, char **argv)
 
     std::ifstream stream {argv[1], std::ios_base::in | std::ios_base::binary};
     minitracer::pe binary {stream};
-
 }
