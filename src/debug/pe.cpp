@@ -76,12 +76,12 @@ void pe::decode_sections(std::vector<char> &strtab,
     for (const auto &sec : sectab) {
         // normal names can be inserted directly
         if (sec.name[0] != '/')
-            sections[sec.name] = {sec.data_off, sec.data_size};
+            sections[sec.name] = {sec.data_off, sec.virt_size};
         else {
             // names starting with a slash need to be indexed in the strtab
             int off = atoi(&sec.name[1]);
             string name = &strtab[off - 4];
-            sections[name] = {sec.data_off, sec.data_size};
+            sections[name] = {sec.data_off, sec.virt_size};
         }
     }
 }
