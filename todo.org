@@ -1,6 +1,6 @@
 * TODO use __pragma to add MSVC support for packed structs
 * TODO test 32 bit
-* TODO change read into .data() to use copy and istream_iterator
-* TODO use FUCKING RESIZE instead of reserve
-* TODO string table in PE has size including the size of the size
+* DONE change read into .data() to use copy and istream_iterator
+* DONE use FUCKING RESIZE instead of reserve
+* DONE string table in PE has size including the size of the size
 * TODO Change cmake to use platform-agnostic flags

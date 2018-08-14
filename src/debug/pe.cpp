@@ -67,8 +67,8 @@ void pe::read_sections()
     if (header.symtable_off) {
         stream.seekg(header.symtable_off + header.symtable_num*18);
         u32 strtab_size = read_obj<u32>(stream);
-        strtab.resize(strtab_size);
-        copy_n(istream_iterator<char>(stream), strtab_size, strtab.begin());
+        strtab.resize(strtab_size - 4);
+        copy_n(istream_iterator<char>(stream), strtab_size - 4, strtab.begin());
     }
 
     decode_sections(strtab, sec_headers);
@@ -84,7 +84,7 @@ void pe::decode_sections(std::vector<char> &strtab,
         else {
             // names starting with a slash need to be indexed in the strtab
             int off = atoi(&sec.name[1]);
-            string name = &strtab[off - 4];
+            string name = &strtab[off];
             sections[name] = {sec.data_off, sec.virt_size};
         }
     }
