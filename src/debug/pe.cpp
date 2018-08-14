@@ -1,6 +1,7 @@
 #include "pe.hpp"
 
 #include <algorithm>
+#include <iterator>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -9,8 +10,10 @@ using std::ios_base;
 using std::array;
 using std::vector;
 using std::equal;
+using std::copy_n;
 using std::invalid_argument;
 using std::string;
+using std::istream_iterator;
 
 namespace minitracer {
 
@@ -64,8 +67,8 @@ void pe::read_sections()
     if (header.symtable_off) {
         stream.seekg(header.symtable_off + header.symtable_num*18);
         u32 strtab_size = read_obj<u32>(stream);
-        strtab.reserve(strtab_size);
-        stream.read(strtab.data(), strtab_size - 4);
+        strtab.resize(strtab_size);
+        copy_n(istream_iterator<char>(stream), strtab_size, strtab.begin());
     }
 
     decode_sections(strtab, sec_headers);

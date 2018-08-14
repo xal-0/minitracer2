@@ -55,7 +55,7 @@ void elf::read_sections()
 
     // read in the section header string table
     vector<char> raw_shstrtab;
-    raw_shstrtab.reserve(shstr.size);
+    raw_shstrtab.resize(shstr.size);
     copy_n(istream_iterator<char>(stream), shstr.size, raw_shstrtab.begin());
 
     // go back and read the rest of the sections
