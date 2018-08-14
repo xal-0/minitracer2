@@ -1,0 +1,3 @@
+* TODO use __pragma to add MSVC support for packed structs
+* TODO test 32 bit
+* TODO change read into .data() to use copy and istream_iterator
