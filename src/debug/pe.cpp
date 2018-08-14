@@ -34,15 +34,14 @@ void pe::read_sections()
     // if it's nonsense, then it isn't a PE file
     try {
         stream.seekg(pe_off);
+        // verify the magic number (this also checks endianness)
+        array<char, 4> magic;
+        copy_n(istream_iterator<char>(stream), 4, magic.begin());
+        if (!equal(magic.begin(), magic.end(), pe_magic.begin()))
+            throw invalid_argument {"not a pe file (wrong magic)"};
     } catch (const ios_base::failure &) {
         throw invalid_argument {"not a pe file (no DOS stub)"};
     }
-
-    // verify the magic number (this also checks endianness)
-    array<char, 4> magic;
-    copy_n(istream_iterator<char>(stream), 4, magic.begin());
-    if (!equal(magic.begin(), magic.end(), pe_magic.begin()))
-        throw invalid_argument {"not a pe file (wrong magic)"};
 
     // verify we have the right architecture
     auto header = read_obj<coff_header>(stream);
