@@ -40,7 +40,7 @@ void pe::read_sections()
 
     // verify the magic number (this also checks endianness)
     array<char, 4> magic;
-    stream.read(magic.data(), magic.size());
+    copy_n(istream_iterator<char>(stream), 4, magic.begin());
     if (!equal(magic.begin(), magic.end(), pe_magic.begin()))
         throw invalid_argument {"not a pe file (wrong magic)"};
 
