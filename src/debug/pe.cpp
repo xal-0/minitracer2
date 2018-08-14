@@ -2,12 +2,14 @@
 
 #include <algorithm>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
 using std::ios_base;
 using std::array, std::vector;
 using std::equal;
 using std::invalid_argument;
+using std::string;
 
 namespace minitracer {
 
@@ -56,12 +58,14 @@ void pe::read_sections()
         sec_headers.push_back(read_obj<section_header>(stream));
     }
 
-    // find the string table and read it in
+    // find the string table and read it in (if it exists)
     vector<char> strtab;
-    stream.seekg(header.symtable_off + header.symtable_num*18);
-    u32 strtab_size = read_obj<u32>(stream);
-    strtab.reserve(strtab_size);
-    stream.read(strtab.data(), strtab_size - 4);
+    if (header.symtable_off) {
+        stream.seekg(header.symtable_off + header.symtable_num*18);
+        u32 strtab_size = read_obj<u32>(stream);
+        strtab.reserve(strtab_size);
+        stream.read(strtab.data(), strtab_size - 4);
+    }
 
     decode_sections(strtab, sec_headers);
 }
@@ -69,11 +73,22 @@ void pe::read_sections()
 void pe::decode_sections(std::vector<char> &strtab,
                          std::vector<section_header> &sectab)
 {
+    for (const auto &sec : sectab) {
+        // normal names can be inserted directly
+        if (sec.name[0] != '/')
+            sections[sec.name] = {sec.data_off, sec.data_size};
+        else {
+            // names starting with a slash need to be indexed in the strtab
+            int off = atoi(&sec.name[1]);
+            string name = &strtab[off - 4];
+            sections[name] = {sec.data_off, sec.data_size};
+        }
+    }
 }
 
 pe::section pe::get_section(std::string name)
 {
-    return {};
+    return sections.at(name);
 }
 
 }
