@@ -10,6 +10,8 @@
 
 int main(int argc, char **argv)
 {
+    std::cout << argv[0] << "\n";
+
     if (argc != 2) {
         std::cerr << "wrong number of arguments\n";
         exit(1);
@@ -17,6 +19,5 @@ int main(int argc, char **argv)
 
     std::ifstream stream {argv[1], std::ios_base::in | std::ios_base::binary};
     minitracer::pe binary {stream};
-    minitracer::pe::section sec = binary.get_section(".debug_line");
-    std::cout << std::hex << sec.offset << "\n";
+    minitracer::dwarf dwarf {stream, binary};
 }

@@ -12,6 +12,10 @@ dwarf::dwarf(istream &stream, sectioned_binary &binary)
     : stream(stream), binary(binary)
 {
     read_linenums();
+
+    for (const auto &l : line_mappings) {
+        std::cout << std::hex << l.address << "\t\t" << l.file->filename << ":" << std::dec << l.line << "\n";
+    }
 }
 
 void dwarf::read_linenums()
@@ -23,9 +27,9 @@ void dwarf::read_linenums()
         throw invalid_argument("no DWARF linenum info found");
     }
 
-    stream.seekg(static_cast<streamoff>(sec.offset));
+    stream.seekg(sec.offset);
 
-    while (stream.tellg() < static_cast<istream::pos_type>(sec.size + sec.offset))
+    while (stream.tellg() < sec.size + sec.offset)
         linenum_prog p {*this};
 }
 
@@ -158,7 +162,7 @@ void dwarf::linenum_prog::execute_standard(dwarf &d, u8 op)
         break;
 
     case 3:
-        line += static_cast<u32>(read_sleb(d.stream));
+        line += read_sleb(d.stream);
         break;
 
     case 4:
@@ -195,7 +199,7 @@ void dwarf::linenum_prog::execute_standard(dwarf &d, u8 op)
 
 void dwarf::linenum_prog::execute_special(dwarf &d, u8 op)
 {
-    line += static_cast<u32>(header.line_base) +
+    line += header.line_base +
         ((op - header.opcode_base) % header.line_range);
     address += ((op - header.opcode_base) / header.line_range)
         * header.minimum_instruction_length;
