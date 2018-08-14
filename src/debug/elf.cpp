@@ -27,7 +27,7 @@ void elf::read_sections()
     auto h = read_obj<elf_header>(stream);
 
     if (!equal(begin(h.magic), end(h.magic), elf_magic.begin()))
-        throw invalid_argument{"not an elf file (wrong magic)"};
+        throw invalid_argument {"not an elf file (wrong magic)"};
 
     if ((h.fileclass == 1 && elf_bits == 64)
         || (h.fileclass == 2 && elf_bits == 32))
