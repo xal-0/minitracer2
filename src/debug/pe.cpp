@@ -84,7 +84,7 @@ void pe::decode_sections(std::vector<char> &strtab,
         else {
             // names starting with a slash need to be indexed in the strtab
             int off = atoi(&sec.name[1]);
-            string name = &strtab[off];
+            string name = &strtab[off - 4];
             sections[name] = {sec.data_off, sec.virt_size};
         }
     }
