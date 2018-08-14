@@ -6,7 +6,8 @@
 #include <vector>
 
 using std::ios_base;
-using std::array, std::vector;
+using std::array;
+using std::vector;
 using std::equal;
 using std::invalid_argument;
 using std::string;

@@ -2,8 +2,10 @@
 
 #include "dwarf.hpp"
 
-using std::istream, std::ios_base, std::streamoff;
-using std::invalid_argument, std::out_of_range;
+using std::istream;
+using std::ios_base;
+using std::invalid_argument;
+using std::out_of_range;
 using std::string;
 
 namespace minitracer {

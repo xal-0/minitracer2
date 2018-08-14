@@ -12,6 +12,8 @@
 
 namespace minitracer {
 
+static const std::array<u8, 4> pe_magic = {{ 'P', 'E', 0x00, 0x00 }};
+
 class pe : public sectioned_binary {
 public:
     pe(std::istream &stream);
@@ -20,8 +22,6 @@ public:
     section get_section(std::string name) override;
 
 protected:
-    static constexpr std::array<u8, 4> pe_magic = {{ 'P', 'E', 0x00, 0x00 }};
-    
 #if defined X86
     static const u16 pe_machine = 0x014c;
     static const u16 pe_opt_sig = 0x10b;

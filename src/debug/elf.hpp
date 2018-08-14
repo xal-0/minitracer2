@@ -9,6 +9,8 @@
 
 namespace minitracer {
 
+static const std::array<u8, 4> elf_magic = {{ 0x7f, 'E', 'L', 'F' }};
+
 class elf : public sectioned_binary {
 public:
     elf(std::istream &stream);
@@ -17,8 +19,6 @@ public:
     section get_section(std::string name) override;
 
 protected:
-    static constexpr std::array<u8, 4> elf_magic = {{ 0x7f, 'E', 'L', 'F' }};
-
 #if defined X86
     static const unsigned elf_bits = 32;
     static const unsigned elf_off = 4;

@@ -6,10 +6,15 @@
 #include "../arch/arch.hpp"
 #include "byteio.hpp"
 
-using std::istream, std::ios_base, std::streamoff, std::istream_iterator;
-using std::equal, std::begin, std::end;
+using std::istream;
+using std::ios_base;
+using std::istream_iterator;
+using std::equal;
+using std::begin;
+using std::end;
 using std::invalid_argument;
-using std::string, std::to_string;
+using std::string;
+using std::to_string;
 using std::vector;
 
 namespace minitracer {
