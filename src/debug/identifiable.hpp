@@ -6,7 +6,7 @@ namespace minitracer {
 
 class identifiable {
 public:
-    static bool identify(std::istream &stream) = 0;
+    static bool identify(std::istream &stream);
 };
 
-};
+}
