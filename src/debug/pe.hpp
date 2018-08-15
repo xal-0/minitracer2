@@ -8,18 +8,20 @@
 
 #include "../arch/arch.hpp"
 #include "byteio.hpp"
+#include "identifiable.hpp"
 #include "sectioned.hpp"
 
 namespace minitracer {
 
 static const std::array<u8, 4> pe_magic = {{ 'P', 'E', 0x00, 0x00 }};
 
-class pe : public sectioned_binary {
+class pe : public sectioned_binary, public identifiable {
 public:
     pe(std::istream &stream);
     ~pe() = default;
 
     section get_section(std::string name) override;
+    static bool identify(std::istream &stream);
 
 protected:
 #if defined X86

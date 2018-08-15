@@ -23,6 +23,11 @@ pe::pe(std::istream &stream)
     read_sections();
 }
 
+bool pe::identify(std::istream &stream)
+{
+    
+}
+
 void pe::read_sections()
 {
     stream.exceptions(ios_base::badbit | ios_base::failbit | ios_base::eofbit);
