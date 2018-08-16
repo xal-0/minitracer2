@@ -15,13 +15,12 @@ struct frame {
 
 #define MT_GET_STACK(x) asm("movq %%rsp, %0;"   \
                             : "=r"(x));
+
 #define MT_CHECK_FPTR(x) ((x) != top_frame)
 
 #define MT_INIT                                 \
     do {                                        \
-        struct frame *cframe;                   \
-        MT_GET_FRAME(cframe);                   \
-        top_frame = cframe->bp;                 \
+        MT_GET_FRAME(top_frame);                \
     } while (0)
 
 #define MT_NEXT_FRAME(x)                        \
