@@ -21,7 +21,7 @@ struct frame {
     do {                                        \
         struct frame *cframe;                   \
         MT_GET_FRAME(cframe);                   \
-        main_bp = cframe->bp;                   \
+        top_frame = cframe->bp;                 \
     } while (0)
 
 #define MT_NEXT_FRAME(x)                        \

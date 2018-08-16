@@ -21,6 +21,8 @@ endif()
 
 add_executable(test ${sources})
 target_compile_options(test PUBLIC -g -Wall -Wpedantic -std=c++14)
+set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address  -fsanitize=undefined")
+set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_STATIC_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
 
 target_include_directories(test PUBLIC src/)
 

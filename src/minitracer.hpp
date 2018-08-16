@@ -3,11 +3,10 @@
 #include "arch/arch.hpp"
 
 namespace minitracer {
+namespace tracer {
 
-class tracer {
-public:
-private:
-    frame top_frame;
-};
+void init();
+void print();
 
+}
 }
