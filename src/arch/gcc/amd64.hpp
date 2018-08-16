@@ -10,8 +10,10 @@ struct frame {
 #define MT_GET_IP(x) asm("leaq (%%rip), %0;"    \
                          : "=r"(x));
 
-#define MT_GET_FRAME(x) asm("movq %%rbp, %0;"   \
-                            : "=r"(x));
+#define MT_GET_FRAME(x)                                 \
+    do {                                                \
+        x = (frame*) __builtin_frame_address(0);        \
+    } while (0)
 
 #define MT_GET_STACK(x) asm("movq %%rsp, %0;"   \
                             : "=r"(x));
