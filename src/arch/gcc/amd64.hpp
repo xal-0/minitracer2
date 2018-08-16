@@ -15,7 +15,7 @@ struct frame {
 
 #define MT_GET_STACK(x) asm("movq %%rsp, %0;"   \
                             : "=r"(x));
-#define MT_CHECK_FPTR(x) ((x) != main_bp)
+#define MT_CHECK_FPTR(x) ((x) != top_frame)
 
 #define MT_INIT                                 \
     do {                                        \
