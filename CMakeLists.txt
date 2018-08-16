@@ -65,8 +65,8 @@ set(CMAKE_CXX_STANDARD 14)
 add_library(minitracer OBJECT ${sources})
 set_target_properties(minitracer PROPERTIES VERSION 0.1)
 
-add_library(minitracer-static SHARED $<TARGET_OBJECTS:minitracer>)
-add_library(minitracer-shared STATIC $<TARGET_OBJECTS:minitracer>)
+add_library(minitracer-static STATIC $<TARGET_OBJECTS:minitracer>)
+add_library(minitracer-shared SHARED $<TARGET_OBJECTS:minitracer>)
 
 target_include_directories(minitracer PUBLIC src/)
 
