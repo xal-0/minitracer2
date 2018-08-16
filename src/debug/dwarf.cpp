@@ -14,10 +14,6 @@ dwarf::dwarf(istream &stream, sectioned_binary &binary)
     : stream(stream), binary(binary)
 {
     read_linenums();
-
-    for (const auto &l : line_mappings) {
-        std::cout << std::hex << l.address << "\t\t" << l.file->filename << ":" << std::dec << l.line << "\n";
-    }
 }
 
 void dwarf::read_linenums()
@@ -35,7 +31,7 @@ void dwarf::read_linenums()
         linenum_prog p {*this};
 }
 
-dwarf::line_map dwarf::get_linenum(uaddr addr)
+const dwarf::line_map *dwarf::get_linenum(uaddr addr)
 {
     auto it = find_if(line_mappings.begin(),
                       line_mappings.end(),
@@ -47,7 +43,7 @@ dwarf::line_map dwarf::get_linenum(uaddr addr)
         throw invalid_argument("no such address found");
     it--;
 
-    return *it;
+    return &*it;
 }
 
 dwarf::linenum_prog::linenum_prog(dwarf &d)

@@ -23,7 +23,7 @@ public:
         friend bool operator<(line_map const &a, line_map const &b);
     };
 
-    virtual line_map get_linenum(uaddr addr) = 0;
+    virtual const line_map *get_linenum(uaddr addr) = 0;
 
     virtual ~debug_info() = default;
 };

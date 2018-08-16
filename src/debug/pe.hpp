@@ -8,7 +8,6 @@
 
 #include "../arch/arch.hpp"
 #include "byteio.hpp"
-#include "identifiable.hpp"
 #include "sectioned.hpp"
 
 namespace minitracer {

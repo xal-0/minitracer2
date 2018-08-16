@@ -17,7 +17,7 @@ public:
     dwarf(std::istream &stream, sectioned_binary &binary);
     ~dwarf() = default;
     
-    line_map get_linenum(uaddr addr) override;
+    const line_map *get_linenum(uaddr addr) override;
 
 protected:
     class linenum_prog {

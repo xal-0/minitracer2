@@ -19,6 +19,9 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 endif()
 
+add_definitions(-DELF)
+add_definitions(-DDWARF)
+
 add_executable(test ${sources})
 target_compile_options(test PUBLIC -g -Wall -Wpedantic -std=c++14)
 set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address  -fsanitize=undefined")
